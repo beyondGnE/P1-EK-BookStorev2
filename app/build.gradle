@@ -14,7 +14,7 @@ plugins {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'p1.mypackage.MyClass'
+                'Main-Class': 'com.p1.ek.bookstorev2.BookStoreAPIDriver'
         )
     }
 }
@@ -30,11 +30,19 @@ dependencies {
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.0.1-jre'
+
+    // https://mvnrepository.com/artifact/io.javalin/javalin
+    implementation group: 'io.javalin', name: 'javalin', version: '4.6.4'
+    // implementation 'io.javalin:javalin:4.6.4'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.31'
+
+    // https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc
+    implementation group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '11.2.0.jre8'
 }
 
 application {
     // Define the main class for the application.
-    mainClass = 'com.p1.ek.bookstorev2.App'
+    mainClass = 'com.p1.ek.bookstorev2.BookStoreAPIDriver'
 }
 
 tasks.named('test') {

@@ -5,23 +5,22 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DB {
-    private Connection db;
-    public Connection getDb() { return db; }
-    public void setDb(Connection db) { this.db = db; }
+    private static Connection db;
 
-    public DB() { db = null; }
-
-    public void connectToDb() {
+    public static Connection connectToDb() {
         if (db == null) {
             String url = "jdbc:sqlserver://localhost:1433;" +
-                        "databaseName=bookstore;"+
+                        "databaseName=master;"+
                         "TrustServerCertificate=True;"+
-                        "user=sa;password=P@SSWORD123;";
+                        "user=sa;password=123456a@;";
             try {
                 db = DriverManager.getConnection(url);
             } catch(SQLException e) {
                 e.printStackTrace();
             }
         }
+        return db;
     }
+
+
 }

@@ -5,13 +5,13 @@ package p1.ek.bookstorev2;
 
 import org.junit.jupiter.api.Test;
 
-import com.p1.ek.bookstorev2.App;
+import com.p1.ek.bookstorev2.BookStoreAPIDriver;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
     @Test void appHasAGreeting() {
-        App classUnderTest = new App();
+        BookStoreAPIDriver classUnderTest = new BookStoreAPIDriver();
         assertNotNull(classUnderTest.getGreeting(), "app should have a greeting");
     }
 }
