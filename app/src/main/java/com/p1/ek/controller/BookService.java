@@ -10,8 +10,8 @@ public class BookService {
     public BookService() {
         br = new BookRepo();
     }
-    public void createRecord() {
-
+    public void createRecord(Book newBook) {
+        br.addBook(newBook);
     }
     public void updateRecord() {
 
@@ -20,7 +20,7 @@ public class BookService {
         return br.getAllBooks();
     }
     public Book readRecord(int bookId) {
-        return null;
+        return br.getBookById(bookId);
     }
     public void deleteRecord() {
         

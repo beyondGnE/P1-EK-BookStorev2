@@ -3,8 +3,12 @@
  */
 package com.p1.ek.bookstorev2;
 
+import com.p1.ek.model.objfiles.Book;
+
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.p1.ek.controller.BookService;
 
 public class BookStoreAPIDriver {
@@ -16,7 +20,19 @@ public class BookStoreAPIDriver {
     public static void main(String[] args) {
         BookService bs = new BookService();
         Javalin app = Javalin.create(JavalinConfig::enableCorsForAllOrigins).start(7070);
+
+        // Get all books
         app.get("/books", ctx -> ctx.json(bs.readRecords()));
+
+        // Get a book
+        app.get("/books/{bookId}", ctx -> ctx.json(bs.readRecord(Integer.parseInt(ctx.pathParam("bookId")))));
+
+        // Post a book
+        app.post("books", ctx -> {
+            ObjectMapper mapper = new ObjectMapper();
+            Book newBook = mapper.readValue(ctx.body(), Book.class);
+            bs.createRecord(newBook);
+        });
         // System.out.println(new BookStoreAPIDriver().getGreeting());
     }
 }
