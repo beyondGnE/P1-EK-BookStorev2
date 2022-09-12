@@ -9,7 +9,9 @@ import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.p1.ek.controller.AuthorService;
 import com.p1.ek.controller.BookService;
+import com.p1.ek.controller.GenreService;
 
 public class BookStoreAPIDriver {
 
@@ -19,6 +21,9 @@ public class BookStoreAPIDriver {
 
     public static void main(String[] args) {
         BookService bs = new BookService();
+        AuthorService as = new AuthorService();
+        GenreService gs = new GenreService();
+
         Javalin app = Javalin.create(JavalinConfig::enableCorsForAllOrigins).start(7070);
 
         // Get all books
@@ -33,6 +38,8 @@ public class BookStoreAPIDriver {
             Book newBook = mapper.readValue(ctx.body(), Book.class);
             bs.createRecord(newBook);
         });
+
+        app.get("/authors", ctx -> ctx.json(as.readRecords()));
         // System.out.println(new BookStoreAPIDriver().getGreeting());
     }
 }

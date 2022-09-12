@@ -24,6 +24,8 @@ public class BookRepo {
     // THE GETTING METHODS:
     
     // Get all the books in the database.
+    // This also includes any related info
+    // like genres and author
     public List<Book> getAllBooks() {
         List<Book> books = new ArrayList<>();
         String query = "SELECT * FROM BOOK b;";
@@ -114,11 +116,12 @@ public class BookRepo {
                         "values (?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement sqlStatement = db.prepareStatement(query);
-            sqlStatement.setInt(1, newBook.getBookId());
-            sqlStatement.setInt(2, newBook.getBookId());
-            sqlStatement.setInt(3, newBook.getBookId());
-            sqlStatement.setInt(4, newBook.getBookId());
-            sqlStatement.setInt(5, newBook.getBookId());
+            sqlStatement.setString(1, newBook.getTitle());
+            sqlStatement.setDouble(2, newBook.getPrice());
+            sqlStatement.setInt(3, newBook.getQuantity());
+            sqlStatement.setString(4, newBook.getImgUrl());
+            sqlStatement.setString(5, newBook.getIsbn());
+            sqlStatement.setString(5, newBook.getPublishDate());
             sqlStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
