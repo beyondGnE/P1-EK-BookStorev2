@@ -19,7 +19,7 @@ public class BookStoreAPIDriver {
     }
 
     public static void main(String[] args) {
-        System.out.println(System.getenv());
+
         BookService bs = new BookService();
         AuthorService as = new AuthorService();
         Javalin app = Javalin.create(JavalinConfig::enableCorsForAllOrigins).start(7070);
