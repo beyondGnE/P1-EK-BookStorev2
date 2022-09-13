@@ -9,12 +9,19 @@ public class DB {
 
     public static Connection connectToDb() {
         if (db == null) {
-            String url = "jdbc:sqlserver://localhost:1433;" +
-                        "databaseName=master;"+
-                        "TrustServerCertificate=True;"+
-                        "user=sa;password=123456a@;";
+            // String url = "jdbc:sqlserver://localhost:1433;" +
+            //             "databaseName=master;"+
+            //             "TrustServerCertificate=True;"+
+            //             "user=sa;password=123456a@;";
+            // String username = System.getenv("${env:dbusername");
+            // String password = System.getenv("${env:dbpassword");
+            // String username = "eugmaker@eugmyserver";
+            // String password = "123456a@";
+            String url = "jdbc:sqlserver://eugmyserver.database.windows.net:1433;"+
+                            "database=masterkey;encrypt=true;"+
+                            "trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
             try {
-                db = DriverManager.getConnection(url);
+                db = DriverManager.getConnection(url, Key.getUserName(), Key.getPassword());
             } catch(SQLException e) {
                 e.printStackTrace();
             }

@@ -20,6 +20,7 @@ public class BookStoreAPIDriver {
     }
 
     public static void main(String[] args) {
+
         BookService bs = new BookService();
         AuthorService as = new AuthorService();
         GenreService gs = new GenreService();
@@ -28,6 +29,8 @@ public class BookStoreAPIDriver {
 
         // Get all books
         app.get("/books", ctx -> ctx.json(bs.readRecords()));
+        // app.get("/authors", ctx -> ctx.json(as.readRecords()));
+        // app.get("/genres", ctx -> ctx.json(gs.readRecords()));
 
         // Get a book
         app.get("/books/{bookId}", ctx -> ctx.json(bs.readRecord(Integer.parseInt(ctx.pathParam("bookId")))));
