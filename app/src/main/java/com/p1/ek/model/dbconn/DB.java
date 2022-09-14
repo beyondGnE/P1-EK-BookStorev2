@@ -17,12 +17,13 @@ public class DB {
             // String password = System.getenv("${env:dbpassword");
             // String username = "eugmaker@eugmyserver";
             // String password = "123456a@";
-            String url = "jdbc:sqlserver://eugmyserver.database.windows.net:1433;"+
+            
+            try {
+                String url = "jdbc:sqlserver://eugmyserver.database.windows.net:1433;"+
                             "database=masterkey;encrypt=true;"+
                             "trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
-            String dbusername = System.getenv("dbusername");
-            String dbpassword = System.getenv("dbpassword");
-            try {
+                String dbusername = System.getenv("dbusername");
+                String dbpassword = System.getenv("dbpassword");
                 // db = DriverManager.getConnection(url, Key.getUserName(), Key.getPassword());
                 db = DriverManager.getConnection(url, dbusername, dbpassword);
             } catch(SQLException e) {
