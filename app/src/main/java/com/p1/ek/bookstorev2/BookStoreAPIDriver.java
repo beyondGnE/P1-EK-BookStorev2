@@ -44,5 +44,7 @@ public class BookStoreAPIDriver {
 
         app.get("/authors", ctx -> ctx.json(as.readRecords()));
         // System.out.println(new BookStoreAPIDriver().getGreeting());
+
+        app.get("/genres", ctx -> ctx.json(gs.readRecords()));
     }
 }

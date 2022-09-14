@@ -1,4 +1,6 @@
 package com.p1.ek.controller;
+import java.util.List;
+
 import com.p1.ek.model.objfiles.Genre;
 import com.p1.ek.model.repos.GenreRepo;
 
@@ -8,6 +10,9 @@ public class GenreService {
 
     public GenreService() { gr = new GenreRepo(); }
 
+    public List<Genre> readRecords() {
+        return gr.getGenres();
+    }
     public void createRecord(Genre genre) {
         
     }
