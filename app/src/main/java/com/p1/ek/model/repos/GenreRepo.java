@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,24 @@ public class GenreRepo {
 
     public GenreRepo() {
         db = DB.connectToDb();
+    }
+
+    public List<Genre> getGenres() {
+        List<Genre> genres = new ArrayList<>();
+        String query = "SELECT * FROM genre;";
+        try {
+            Statement sqlStatement = db.createStatement();
+            ResultSet rs = sqlStatement.executeQuery(query);
+
+            while (rs.next()) {
+                // For a single book, get list of authors and genres
+                genres.add(new Genre(rs.getInt("genreId"),
+                            rs.getString("genreName")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return genres;
     }
 
     public Genre getGenreById(int id) {
