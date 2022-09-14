@@ -4,8 +4,6 @@
 # Ignore Gradle build output directory
 build
 
-# Ignore bin
-app/bin
 
 launch.json
 
