@@ -22,8 +22,8 @@ public class DB {
                 String url = "jdbc:sqlserver://eugmyserver.database.windows.net:1433;"+
                             "database=masterkey;encrypt=true;"+
                             "trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
-                String dbusername = System.getenv("dbusername");
-                String dbpassword = System.getenv("dbpassword");
+                String dbusername = System.getenv("$dbusername");
+                String dbpassword = System.getenv("$dbpassword");
                 // db = DriverManager.getConnection(url, Key.getUserName(), Key.getPassword());
                 db = DriverManager.getConnection(url, dbusername, dbpassword);
             } catch(SQLException e) {
