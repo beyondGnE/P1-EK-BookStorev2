@@ -10,15 +10,21 @@ import java.util.List;
 
 import com.p1.ek.model.dbconn.DB;
 import com.p1.ek.model.objfiles.Book;
+import com.p1.ek.model.repos.AuthorRepo;
+import com.p1.ek.model.repos.GenreRepo;
 
 // Only focus on getting the direct data from the db into the model classes.
 // Coordinating that information together should be for the service classes.
 public class BookRepo {
 
     private Connection db;
+    private AuthorRepo ar;
+    private GenreRepo gr;
 
     public BookRepo() {
         db = DB.connectToDb();
+        ar = new AuthorRepo();
+        gr = new GenreRepo();
     }
 
     // THE GETTING METHODS:
@@ -34,6 +40,7 @@ public class BookRepo {
             ResultSet rs = sqlStatement.executeQuery(query);
 
             while (rs.next()) {
+                // For a single book, get list of authors and genres
                 books.add(new Book(
                     rs.getInt("bookId"),
                     rs.getString("title"),
@@ -41,8 +48,9 @@ public class BookRepo {
                     rs.getInt("quantity"), 
                     rs.getString("imgUrl"),
                     rs.getString("isbn"),
-                    // rs.getInt("authorId"),
-                    rs.getString("publishDate")
+                    rs.getString("publishDate"),
+                    ar.getAuthorsByBookId(rs.getInt("bookId")),
+                    gr.getGenresByBookId(rs.getInt("bookId"))
                 ));
             }
         } catch (SQLException e) {
@@ -97,8 +105,9 @@ public class BookRepo {
                     rs.getInt("quantity"), 
                     rs.getString("imgUrl"),
                     rs.getString("isbn"),
-                    // rs.getInt("authorId"),
-                    rs.getString("publishDate")
+                    rs.getString("publishDate"),
+                    ar.getAuthorsByBookId(rs.getInt("bookId")),
+                    gr.getGenresByBookId(rs.getInt("bookId"))
                 ));
             }
         } catch (SQLException e) {
