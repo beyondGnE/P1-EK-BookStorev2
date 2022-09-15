@@ -77,8 +77,9 @@ public class BookRepo {
                 gotBook.setQuantity(rs.getInt("quantity")); 
                 gotBook.setImgUrl(rs.getString("imgUrl"));
                 gotBook.setIsbn(rs.getString("isbn"));
-                    // rs.getInt("authorId"),
                 gotBook.setPublishDate(rs.getString("publishDate"));
+                gotBook.setAuthors(ar.getAuthorsByBookId(rs.getInt("bookId")));
+                gotBook.setGenres(gr.getGenresByBookId(rs.getInt("bookId")));
                 return gotBook;
             }
         } catch (SQLException e) {
@@ -136,4 +137,6 @@ public class BookRepo {
             e.printStackTrace();
         }
     }
+
+    
 }

@@ -1,13 +1,43 @@
 ul {
     list-style-type: none;
     /* background: #333; */
-    display: inline;
+    /* display: inline; */
 }
 
-aside {
+li {
+    float: left;
+    padding: 16px;
+}
+
+nav {
     display: inline-flex;
 }
 
 article {
-    display: inline-flex;
+    /* display: inline-flex; */
+    padding-left: 2.5em;
+}
+
+.bookThumbImg {
+    float: left;
+    object-fit: cover;
+    width: 200px;
+    height: auto;
+    
+}
+
+.bookThumbTitle {
+    padding-top: 50px;
+}
+
+.bookThumbContainer {
+    margin: 0.5em;
+}
+
+.book-title-details {
+    
+}
+
+.book-authors-details {
+
 }
