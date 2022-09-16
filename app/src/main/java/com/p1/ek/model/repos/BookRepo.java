@@ -12,6 +12,8 @@ import com.p1.ek.model.dbconn.DB;
 import com.p1.ek.model.objfiles.Book;
 import com.p1.ek.model.repos.AuthorRepo;
 import com.p1.ek.model.repos.GenreRepo;
+import com.p1.ek.model.objfiles.Author;
+import com.p1.ek.model.objfiles.Genre;
 
 // Only focus on getting the direct data from the db into the model classes.
 // Coordinating that information together should be for the service classes.
@@ -133,10 +135,14 @@ public class BookRepo {
             sqlStatement.setString(5, newBook.getIsbn());
             sqlStatement.setString(5, newBook.getPublishDate());
             sqlStatement.executeUpdate();
+
+            ar.addAuthors(newBook.getAuthors());
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     
 }

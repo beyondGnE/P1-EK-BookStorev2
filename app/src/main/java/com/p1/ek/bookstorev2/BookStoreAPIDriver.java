@@ -8,6 +8,9 @@ import com.p1.ek.model.objfiles.Book;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.p1.ek.controller.AuthorService;
 import com.p1.ek.controller.BookService;
@@ -15,18 +18,25 @@ import com.p1.ek.controller.GenreService;
 
 public class BookStoreAPIDriver {
 
+    private static Logger log = LogManager.getLogger(BookStoreAPIDriver.class);
+
     public String getGreeting() {
         return "Hello World!";
     }
 
     public static void main(String[] args) {
 
+        log.info("Wassup");
+
         BookService bs = new BookService();
         AuthorService as = new AuthorService();
         GenreService gs = new GenreService();
 
+        
+
         Javalin app = Javalin.create(JavalinConfig::enableCorsForAllOrigins).start(7070);
 
+        
         // Get all books
         app.get("/books", ctx -> ctx.json(bs.readRecords()));
         // app.get("/authors", ctx -> ctx.json(as.readRecords()));
@@ -46,5 +56,7 @@ public class BookStoreAPIDriver {
         // System.out.println(new BookStoreAPIDriver().getGreeting());
 
         app.get("/genres", ctx -> ctx.json(gs.readRecords()));
+
+        // app.post("/login", ctx -> ctx.json());
     }
 }

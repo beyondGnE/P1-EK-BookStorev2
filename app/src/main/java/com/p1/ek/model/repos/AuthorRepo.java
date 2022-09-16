@@ -59,15 +59,25 @@ public class AuthorRepo {
     }
 
     public void addAuthor(Author newAuthor) {
-        String query = "insert into author(firstName, lastName) " +
-                        "values (?, ?)";
-        try {
-            PreparedStatement sqlStatement = db.prepareStatement(query);
-            sqlStatement.setString(1, newAuthor.getFirstName());
-            sqlStatement.setString(2, newAuthor.getLastName());
-            sqlStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        Author possAuthor = this.getAuthorById(newAuthor.getAuthorId());
+        
+        if (possAuthor == null) { // Check if exists. If it doesn't, add; otherwise do nothing.
+            String query = "insert into author(firstName, lastName) " +
+                            "values (?, ?)";
+            try {
+                PreparedStatement sqlStatement = db.prepareStatement(query);
+                sqlStatement.setString(1, newAuthor.getFirstName());
+                sqlStatement.setString(2, newAuthor.getLastName());
+                sqlStatement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void addAuthors(List<Author> newAuthors) {
+        for (Author a : newAuthors) {
+            this.addAuthor(a);
         }
     }
     
