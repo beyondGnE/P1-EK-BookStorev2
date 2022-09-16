@@ -26,7 +26,7 @@ public class BookStoreAPIDriver {
 
     public static void main(String[] args) {
 
-        log.info("Wassup");
+        
 
         BookService bs = new BookService();
         AuthorService as = new AuthorService();
@@ -36,7 +36,7 @@ public class BookStoreAPIDriver {
 
         Javalin app = Javalin.create(JavalinConfig::enableCorsForAllOrigins).start(7070);
 
-        
+        log.info("Wassup");
         // Get all books
         app.get("/books", ctx -> ctx.json(bs.readRecords()));
         // app.get("/authors", ctx -> ctx.json(as.readRecords()));
