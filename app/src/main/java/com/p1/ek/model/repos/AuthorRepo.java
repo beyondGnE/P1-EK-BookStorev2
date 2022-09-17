@@ -58,8 +58,29 @@ public class AuthorRepo {
         return null;
     }
 
+    public Author getAuthorByTitle(String firstName, String lastName) {
+        
+        String query = "SELECT * FROM AUTHOR where firstName = ? and lastName = ?;";
+        try {
+            PreparedStatement sqlStatement = db.prepareStatement(query);
+            sqlStatement.setString(1, firstName);
+            sqlStatement.setString(2, lastName);
+            ResultSet rs = sqlStatement.executeQuery();
+            if (rs != null) {
+                Author getAuthor = new Author(rs.getInt("authorId"), 
+                                    rs.getString("firstName"), rs.getString("lastName"));
+                return getAuthor;
+            }
+            
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void addAuthor(Author newAuthor) {
-        Author possAuthor = this.getAuthorById(newAuthor.getAuthorId());
+        Author possAuthor = this.getAuthorByTitle(newAuthor.getFirstName(), newAuthor.getLastName()); 
+        // User more likely to identify authors by name rather than by id.
         
         if (possAuthor == null) { // Check if exists. If it doesn't, add; otherwise do nothing.
             String query = "insert into author(firstName, lastName) " +
@@ -102,5 +123,20 @@ public class AuthorRepo {
             e.printStackTrace();
         }
         return bookAuthors;
+    }
+
+    public int findAuthorMaxId() {
+        String query = "select * from author where authorId = (select max(authorId) from author);";
+        int max = -1;
+        try {
+            Statement sqlStatement = db.createStatement();
+            ResultSet rs = sqlStatement.executeQuery(query);
+            if (rs.next()) {
+                max = rs.getInt("authorId");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return max;
     }
 }

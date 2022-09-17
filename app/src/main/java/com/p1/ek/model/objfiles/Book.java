@@ -45,4 +45,11 @@ public class Book extends Item {
     private int bookId; // primary key
     private List<Genre> genres;
     private String publishDate;
+
+    @Override
+    public String toString() {
+        return super.getTitle() + " " + 
+                super.getPrice() + " " +
+                isbn + " " + bookId + " " + " " + publishDate + " \n" + authors;
+    }
 }

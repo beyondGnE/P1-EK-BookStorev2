@@ -102,8 +102,10 @@ async function populateBooks(response) {
 function populateBookDetails(response) {
     let bookTitle = createBookTitle(response.title);
     let bookAuthors = createAuthorDiv(response.authors);
+    let bookImg = createBookImg(response.imgUrl);
 
     artContent.innerText = "";
+    artContent.appendChild(bookImg);
     artContent.appendChild(bookTitle);
     artContent.appendChild(bookAuthors);
 }
@@ -131,8 +133,23 @@ function createAuthorDiv(authorList) {
     return divAuthors;
 }
 
+function createBookImg(imgUrl) {
+    let asideImg = document.createElement('aside');
+    asideImg.classList.add('asideImg');
+    let actualImg = document.createElement('img');
+    actualImg.classList.add('book-img-details');
+    actualImg.src = imgUrl;
+
+    asideImg.appendChild(actualImg);
+    return asideImg;
+}
+
 async function apiPostBook() {
+    titleInput = document.getElementById('titleInput');
+    authorFirstName = document.getElementById('authorFirstName');
+
     let inputBook = {
-        title: titleInput.value
+        title: titleInput.value != null ? titleInput.value : "",
+        author: authorFirstName.value != null ? titleInput.value : "",
     }
 }

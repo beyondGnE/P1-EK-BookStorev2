@@ -13,8 +13,8 @@ public class BookService {
     public void createRecord(Book newBook) {
         br.addBook(newBook);
     }
-    public void updateRecord() {
-
+    public void updateRecord(Book modBook) {
+        br.updateBook(modBook);
     }
     public List<Book> readRecords() {
         return br.getAllBooks();
@@ -22,7 +22,7 @@ public class BookService {
     public Book readRecord(int bookId) {
         return br.getBookById(bookId);
     }
-    public void deleteRecord() {
-        
+    public void deleteRecord(Book delBook) {
+        br.deleteBook(delBook);
     }
 }

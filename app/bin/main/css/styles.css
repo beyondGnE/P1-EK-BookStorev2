@@ -41,3 +41,13 @@ article {
 .book-authors-details {
 
 }
+
+.book-img-details {
+    width: 400px;
+    height: auto;
+}
+
+.asideImg {
+    float: left;
+    margin-right: 50px;
+}

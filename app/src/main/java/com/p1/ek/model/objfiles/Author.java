@@ -23,4 +23,9 @@ public class Author {
     private int authorId;
     private String firstName;
     private String lastName;
+
+    @Override
+    public String toString() {
+        return authorId + " " + firstName + " " + lastName;
+    }
 }

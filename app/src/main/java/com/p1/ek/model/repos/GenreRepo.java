@@ -52,6 +52,22 @@ public class GenreRepo {
         return null;
     }
 
+    public Genre getGenreByName(String genreName) {
+        String query = "select * from genre where genreName = ?";
+        try {
+            PreparedStatement sqlStatement = db.prepareStatement(query);
+            sqlStatement.setString(1, genreName);
+            ResultSet rs = sqlStatement.executeQuery();
+            if (rs != null) {
+                Genre getGenre = new Genre(rs.getInt("genreId"), rs.getString("genreName"));
+                return getGenre;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public List<Genre> getGenresByBookId(int bookId) {
         List<Genre> bookGenres = new ArrayList<>();
         String query = "select * from genre g inner join book_genre_link bgl " +
@@ -63,13 +79,34 @@ public class GenreRepo {
             sqlStatement.setInt(1,bookId);
             ResultSet rs = sqlStatement.executeQuery();
             while (rs.next()) {
-                bookGenres.add(new Genre(rs.getInt("genreId"),
-                                            rs.getString("genreName")));
+                bookGenres.add(new Genre(rs.getInt("genreId"),rs.getString("genreName")));
             }
         }
         catch (SQLException e) {
             e.printStackTrace();
         }
         return bookGenres;
+    }
+
+    public void addGenre(Genre newGenre) {
+        Genre possGenre = this.getGenreByName(newGenre.getGenreName());
+        
+        if (possGenre == null) { // Check if exists. If it doesn't, add; otherwise do nothing.
+            String query = "insert into author(genreName) " +
+                            "values (?)";
+            try {
+                PreparedStatement sqlStatement = db.prepareStatement(query);
+                sqlStatement.setString(1, newGenre.getGenreName());
+                sqlStatement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void addGenres(List<Genre> newGenres) {
+        for (Genre g : newGenres) {
+            this.addGenre(g);
+        }
     }
 }

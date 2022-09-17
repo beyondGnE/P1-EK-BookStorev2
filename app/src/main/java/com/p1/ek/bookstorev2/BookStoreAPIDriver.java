@@ -46,10 +46,16 @@ public class BookStoreAPIDriver {
         app.get("/books/{bookId}", ctx -> ctx.json(bs.readRecord(Integer.parseInt(ctx.pathParam("bookId")))));
 
         // Post a book
+        // User shouldn't have to care about ids; that information isn't available to them anyway.
+        // Therefore, the json passed in would have to be specifically formatted, without ids.
+        // API will then use services to internally take care of the ids.
         app.post("books", ctx -> {
             ObjectMapper mapper = new ObjectMapper();
             Book newBook = mapper.readValue(ctx.body(), Book.class);
-            bs.createRecord(newBook);
+            // Book newBook = new Book();
+            // newBook.setTitle
+            // bs.createRecord(newBook);
+            System.out.println(newBook);
         });
 
         app.get("/authors", ctx -> ctx.json(as.readRecords()));
