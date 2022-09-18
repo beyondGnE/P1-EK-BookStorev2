@@ -13,12 +13,14 @@ import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.p1.ek.controller.AuthorService;
+import com.p1.ek.controller.BookAuthorLinkService;
+import com.p1.ek.controller.BookGenreLinkService;
 import com.p1.ek.controller.BookService;
 import com.p1.ek.controller.GenreService;
 
 public class BookStoreAPIDriver {
 
-    private static Logger log = LogManager.getLogger(BookStoreAPIDriver.class);
+    // private static Logger log = LogManager.getLogger(BookStoreAPIDriver.class);
 
     public String getGreeting() {
         return "Hello World!";
@@ -31,14 +33,15 @@ public class BookStoreAPIDriver {
         BookService bs = new BookService();
         AuthorService as = new AuthorService();
         GenreService gs = new GenreService();
-
+        BookAuthorLinkService bals = new BookAuthorLinkService();
+        BookGenreLinkService bgls = new BookGenreLinkService();
         
 
         Javalin app = Javalin.create(JavalinConfig::enableCorsForAllOrigins).start(7070);
 
-        log.info("Wassup");
+        // log.info("Wassup");
         // Get all books
-        app.get("/books", ctx -> ctx.json(bs.readRecords()));
+        app.get("/books", ctx -> ctx.json(bs.readRecords(as, gs)));
         // app.get("/authors", ctx -> ctx.json(as.readRecords()));
         // app.get("/genres", ctx -> ctx.json(gs.readRecords()));
 
@@ -54,8 +57,8 @@ public class BookStoreAPIDriver {
             Book newBook = mapper.readValue(ctx.body(), Book.class);
             // Book newBook = new Book();
             // newBook.setTitle
-            // bs.createRecord(newBook);
-            System.out.println(newBook);
+            bs.createRecord(newBook, as, gs, bals, bgls);
+            // System.out.println(newBook);
         });
 
         app.get("/authors", ctx -> ctx.json(as.readRecords()));

@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.p1.ek.model.dbconn.DB;
 import com.p1.ek.model.objfiles.Author;
+import com.p1.ek.model.objfiles.Book;
 
 // The repo class for authors
 // BookRepo depends on this when adding new books
@@ -38,6 +39,7 @@ public class AuthorRepo {
         }
         return authors;
     }
+
 
     public Author getAuthorById(int authorId) {
         
@@ -96,8 +98,8 @@ public class AuthorRepo {
         }
     }
 
-    public void addAuthors(List<Author> newAuthors) {
-        for (Author a : newAuthors) {
+    public void addAuthors(Book newBook) {
+        for (Author a : newBook.getAuthors()) {
             this.addAuthor(a);
         }
     }
@@ -112,6 +114,28 @@ public class AuthorRepo {
         try {
             PreparedStatement sqlStatement = db.prepareStatement(query);
             sqlStatement.setInt(1,bookId);
+            ResultSet rs = sqlStatement.executeQuery();
+            while (rs.next()) {
+                bookAuthors.add(new Author(rs.getInt("authorId"),
+                                            rs.getString("firstName"),
+                                            rs.getString("lastName")));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookAuthors;
+    }
+
+    public List<Author> getAuthorsByBook(Book aBook) {
+        List<Author> bookAuthors = new ArrayList<>();
+        String query = "select * from author a inner join book_author_link bal " +
+                        "on a.authorId = bal.authorId " +
+                        "inner join book b on bal.bookId = b.bookId " +
+                        "where b.bookId = ?";
+        try {
+            PreparedStatement sqlStatement = db.prepareStatement(query);
+            sqlStatement.setInt(1,aBook.getBookId());
             ResultSet rs = sqlStatement.executeQuery();
             while (rs.next()) {
                 bookAuthors.add(new Author(rs.getInt("authorId"),

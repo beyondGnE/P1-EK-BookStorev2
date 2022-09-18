@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.p1.ek.model.dbconn.DB;
+import com.p1.ek.model.objfiles.Book;
 import com.p1.ek.model.objfiles.Genre;
 
 public class GenreRepo {
@@ -87,6 +88,27 @@ public class GenreRepo {
         }
         return bookGenres;
     }
+    
+    // Called when retrieving a book.
+    public List<Genre> getGenresByBook(Book aBook) {
+        List<Genre> bookGenres = new ArrayList<>();
+        String query = "select * from genre g inner join book_genre_link bgl " +
+                        "on g.genreId = bgl.genreId " +
+                        "inner join book b on bgl.bookId = b.bookId " +
+                        "where b.bookId = ?";
+        try {
+            PreparedStatement sqlStatement = db.prepareStatement(query);
+            sqlStatement.setInt(1,aBook.getBookId());
+            ResultSet rs = sqlStatement.executeQuery();
+            while (rs.next()) {
+                bookGenres.add(new Genre(rs.getInt("genreId"),rs.getString("genreName")));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bookGenres;
+    }
 
     public void addGenre(Genre newGenre) {
         Genre possGenre = this.getGenreByName(newGenre.getGenreName());
@@ -104,8 +126,8 @@ public class GenreRepo {
         }
     }
 
-    public void addGenres(List<Genre> newGenres) {
-        for (Genre g : newGenres) {
+    public void addGenres(Book newBook) {
+        for (Genre g : newBook.getGenres()) {
             this.addGenre(g);
         }
     }

@@ -53,7 +53,7 @@ function template_BookThumb(responseItem) {
         bookContainer.appendChild(bookTitle);
 
         return bookContainer;
-    }
+    } return null;
 }
 
 async function template_BookPage(response) {
@@ -69,19 +69,27 @@ async function populateBooks(response) {
     // console.log(template_BookThumb(response[0]));
     let bookTable = document.createElement('table');
     bookTable.classList.add('bookTable');
-    for (let i = 0; i < 1; i++)
+    for (let i = 0; i < 10; i++)
     {
-        let bookRow = document.createElement('tr');
+        // let bookRow = document.createElement('tr');
+        let bookRow = document.createElement('ul');
         bookRow.classList.add('bookRow');
-        for (let j = i; j < 2; j++) {
-            let bookItem = document.createElement('td');
+        for (let j = i; j < 5; j++) {
+            // let bookItem = document.createElement('td');
+            let bookItem = document.createElement('li');
             bookItem.classList.add('bookItem');
             
-            bookItem.appendChild(template_BookThumb(response[i+j]));
+            let bookThumb = template_BookThumb(response[i+j]);
+            if (bookThumb != null) {
+                bookItem.appendChild(bookThumb);
+                bookRow.appendChild(bookItem);
+            }
             // console.log(template_BookThumb(response[i+j]));
-            bookRow.appendChild(bookItem);
+            
         }
-        bookTable.appendChild(bookRow);
+        if (bookRow.hasChildNodes()) {
+            bookTable.appendChild(bookRow);
+        }
     }
     // for (let i = 0; i < response.length; i++)
     // {

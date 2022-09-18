@@ -52,8 +52,10 @@ public class BookRepo {
                     rs.getString("imgUrl"),
                     rs.getString("isbn"),
                     rs.getString("publishDate"),
-                    ar.getAuthorsByBookId(rs.getInt("bookId")),
-                    gr.getGenresByBookId(rs.getInt("bookId"))
+                    new ArrayList<>(),
+                    new ArrayList<>()
+                    // ar.getAuthorsByBookId(rs.getInt("bookId")),
+                    // gr.getGenresByBook(rs.getInt("bookId"))
                 ));
             }
         } catch (SQLException e) {
@@ -62,7 +64,7 @@ public class BookRepo {
         return books;
     }
 
-    // Get a book by its id.
+    // Get a book by its id from database.
     // Should always return one book, since book ids are unique.
     public Book getBookById(int id) {
         
@@ -120,10 +122,39 @@ public class BookRepo {
         return books;
     }
 
+    public Book getBookByTitle(String title) {
+        // List<Book> books = new ArrayList<>();
+        String query = "SELECT * FROM BOOK b where b.title = ?;";
+        try {
+            PreparedStatement sqlStatement = db.prepareStatement(query);
+            sqlStatement.setString(1, title);
+            ResultSet rs = sqlStatement.executeQuery();
+
+            if (rs.next()) {
+                Book gotBook = new Book();
+                gotBook.setBookId(rs.getInt("bookId"));
+                gotBook.setTitle(rs.getString("title"));
+                gotBook.setPrice(rs.getDouble("price")); 
+                gotBook.setQuantity(rs.getInt("quantity")); 
+                gotBook.setImgUrl(rs.getString("imgUrl"));
+                gotBook.setIsbn(rs.getString("isbn"));
+                gotBook.setPublishDate(rs.getString("publishDate"));
+                gotBook.setAuthors(ar.getAuthorsByBookId(rs.getInt("bookId")));
+                gotBook.setGenres(gr.getGenresByBookId(rs.getInt("bookId")));
+                return gotBook;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 // THE ADDING METHODS
 
     // Add a new book to the database
     // (Thing to consider) allow the quantity of a book to increment when another book with the same information is added.
+    // You must insert into both author and genre first before inserting into book!
+    // Getting the relevant parts of the input model into their respective classes and tables.
     public void addBook(Book newBook) {
         List<Book> possBooks = this.getBooksByTitle(newBook.getTitle()); // Check if the book already exists; if it does, update book's quantity; if not, add it
         if (possBooks.size() != 0) {
@@ -135,20 +166,17 @@ public class BookRepo {
             String query = "insert into book(title, price, quantity, imgUrl, isbn, publishDate) " +
                             "values (?, ?, ?, ?, ?, ?)";
             try {
+                // ar.addAuthors(newBook.getAuthors());
+                // gr.addGenres(newBook.getGenres());
+
                 PreparedStatement sqlStatement = db.prepareStatement(query);
                 sqlStatement.setString(1, newBook.getTitle());
                 sqlStatement.setDouble(2, newBook.getPrice());
                 sqlStatement.setInt(3, newBook.getQuantity());
                 sqlStatement.setString(4, newBook.getImgUrl());
                 sqlStatement.setString(5, newBook.getIsbn());
-                sqlStatement.setString(5, newBook.getPublishDate());
+                sqlStatement.setString(6, newBook.getPublishDate());
                 sqlStatement.executeUpdate();
-
-                ar.addAuthors(newBook.getAuthors());
-                gr.addGenres(newBook.getGenres());
-
-                // And now update the link tables
-                this.addBookLink(newBook);
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -161,32 +189,36 @@ public class BookRepo {
     // The book already should be checked if it is in the database
     // And the authors and genres should also already be checked for duplicates,
     // since the author and genre ids should already exist in their tables.
-    public void addBookLink(Book newBook) {
-        for (Author a : newBook.getAuthors()) {
-            String query = "insert into book_author_link(bookId, authorId) values(?, ?)";
-            try {
-                PreparedStatement sqlStatement = db.prepareStatement(query);
-                sqlStatement.setInt(1, newBook.getBookId());
-                sqlStatement.setInt(2, a.getAuthorId());
-                sqlStatement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+    // public void addBookLink(Book newBook) { // Insert Parameters do not have a reliable bookId, so don't use it.
+    //     for (Author a : newBook.getAuthors()) {
+    //         if (a != null) {
+    //             String query = "insert into book_author_link(bookId, authorId) values(?, ?)";
+    //             try {
+    //                 PreparedStatement sqlStatement = db.prepareStatement(query);
+    //                 sqlStatement.setInt(1, this.getBookByTitle(newBook.getTitle()).getBookId());
+    //                 sqlStatement.setInt(2, ar.getAuthorByTitle(a.getFirstName(), a.getLastName()).getAuthorId());
+    //                 sqlStatement.executeUpdate();
+    //             } catch (SQLException e) {
+    //                 e.printStackTrace();
+    //             }
+    //         }
+    //     }
 
-        // Now for the genres:
-        for (Genre g : newBook.getGenres()) {
-            String query = "insert into book_genre_link(bookId, genreId) values(?, ?)";
-            try {
-                PreparedStatement sqlStatement = db.prepareStatement(query);
-                sqlStatement.setInt(1, newBook.getBookId());
-                sqlStatement.setInt(2, g.getGenreId());
-                sqlStatement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+    //     // Now for the genres:
+    //     for (Genre g : newBook.getGenres()) {
+    //         if (g != null) {
+    //             String query = "insert into book_genre_link(bookId, genreId) values(?, ?)";
+    //             try {
+    //                 PreparedStatement sqlStatement = db.prepareStatement(query);
+    //                 sqlStatement.setInt(1, this.getBookByTitle(newBook.getTitle()).getBookId());
+    //                 sqlStatement.setInt(2, g.getGenreId());
+    //                 sqlStatement.executeUpdate();
+    //             } catch (SQLException e) {
+    //                 e.printStackTrace();
+    //             }
+    //         }
+    //     }
+    // }
 
 // UPDATE METHODS:
 
@@ -224,6 +256,8 @@ public class BookRepo {
         }
 
     }
+
+// DELETE METHODS
 
     public void deleteBook(Book delBook) {
         String query = "delete book " +
