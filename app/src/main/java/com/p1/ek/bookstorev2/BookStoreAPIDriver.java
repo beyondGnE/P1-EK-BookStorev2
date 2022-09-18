@@ -41,30 +41,39 @@ public class BookStoreAPIDriver {
 
         // log.info("Wassup");
         // Get all books
-        app.get("/books", ctx -> ctx.json(bs.readRecords(as, gs)));
+        app.get("/api/books", ctx -> ctx.json(bs.readRecords(as, gs)));
         // app.get("/authors", ctx -> ctx.json(as.readRecords()));
         // app.get("/genres", ctx -> ctx.json(gs.readRecords()));
 
         // Get a book
-        app.get("/books/{bookId}", ctx -> ctx.json(bs.readRecord(Integer.parseInt(ctx.pathParam("bookId")))));
+        app.get("/api/books/{bookId}", ctx -> ctx.json(bs.readRecord(Integer.parseInt(ctx.pathParam("bookId")), as, gs)));
 
         // Post a book
         // User shouldn't have to care about ids; that information isn't available to them anyway.
         // Therefore, the json passed in would have to be specifically formatted, without ids.
         // API will then use services to internally take care of the ids.
-        app.post("books", ctx -> {
+        app.post("api/books", ctx -> {
             ObjectMapper mapper = new ObjectMapper();
             Book newBook = mapper.readValue(ctx.body(), Book.class);
-            // Book newBook = new Book();
-            // newBook.setTitle
             bs.createRecord(newBook, as, gs, bals, bgls);
-            // System.out.println(newBook);
+        });
+
+        app.put("api/books/{bookId}", ctx -> {
+            Book modBook = bs.readRecord(Integer.parseInt(ctx.pathParam("bookId")), as, gs);
+            bs.updateRecord(modBook, as, gs, bals, bgls);
+        });
+
+        app.delete("api/books/{bookId}", ctx -> {
+            Book delBook = bs.readRecord(Integer.parseInt(ctx.pathParam("bookId")), as, gs);
+            bs.deleteRecord(delBook, bals, bgls);
         });
 
         app.get("/authors", ctx -> ctx.json(as.readRecords()));
         // System.out.println(new BookStoreAPIDriver().getGreeting());
 
         app.get("/genres", ctx -> ctx.json(gs.readRecords()));
+
+
 
         // app.post("/login", ctx -> ctx.json());
     }

@@ -13,4 +13,13 @@ public class BookGenreLinkService {
     public void createRecord(Book newBook) {
         bglr.addBookGenreLink(newBook);
     }
+
+    public void updateRecord(Book modBook) {
+        bglr.deleteBookLink(modBook);
+        bglr.addBookGenreLink(modBook);
+    }
+
+    public void deleteRecord(Book delBook) {
+        bglr.deleteBookLink(delBook);
+    }
 }

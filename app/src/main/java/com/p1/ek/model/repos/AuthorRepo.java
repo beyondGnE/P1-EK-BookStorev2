@@ -149,6 +149,28 @@ public class AuthorRepo {
         return bookAuthors;
     }
 
+    // There is no expectation of deletion; that's its own separate method and situation.
+    public void updateAuthorsForBook(Book modBook) {
+        String query = "update (select * from author a inner join book_author_link bal " +
+                        "on a.authorId = bal.authorId " +
+                        "inner join book b on bal.bookId = b.bookId " +
+                        "where b.bookId = ?) " +
+                        "set firstName = ?, lastName = ? where authorId = ?";
+        try {
+            for (Author a : modBook.getAuthors()) {
+                PreparedStatement sqlStatement = db.prepareStatement(query);
+                sqlStatement.setInt(1, modBook.getBookId());
+                sqlStatement.setString(2, a.getFirstName());
+                sqlStatement.setString(3, a.getLastName());
+                sqlStatement.setInt(4, a.getAuthorId());
+                sqlStatement.executeUpdate();
+            }
+            
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public int findAuthorMaxId() {
         String query = "select * from author where authorId = (select max(authorId) from author);";
         int max = -1;

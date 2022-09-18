@@ -131,4 +131,24 @@ public class GenreRepo {
             this.addGenre(g);
         }
     }
+
+    public void updateGenresForBook(Book modBook) {
+        String query = "update (select * from genre g inner join book_genre_link bgl " +
+                        "on g.genreId = bgl.genreId " +
+                        "inner join book b on bgl.bookId = b.bookId " +
+                        "where b.bookId = ?) " +
+                        "set genreName = ? where genreId = ?";
+        try {
+            for (Genre g : modBook.getGenres()) {
+                PreparedStatement sqlStatement = db.prepareStatement(query);
+                sqlStatement.setInt(1, modBook.getBookId());
+                sqlStatement.setString(2, g.getGenreName());
+                sqlStatement.setInt(3, g.getGenreId());
+                sqlStatement.executeUpdate();
+            }
+            
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

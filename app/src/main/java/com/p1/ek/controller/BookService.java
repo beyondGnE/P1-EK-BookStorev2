@@ -19,8 +19,14 @@ public class BookService {
         bals.createRecord(newBook);
         bgls.createRecord(newBook);
     }
-    public void updateRecord(Book modBook) {
+    public void updateRecord(Book modBook, AuthorService as, GenreService gs, BookAuthorLinkService bals, BookGenreLinkService bgls) {
         br.updateBook(modBook);
+        as.updateRecord(modBook);
+        gs.updateRecord(modBook);
+        bals.updateRecord(modBook);
+        bgls.updateRecord(modBook);
+        // bals.updateRecord(modBook);
+        // bgls.updateRecord(modBook);
     }
     public List<Book> readRecords(AuthorService as, GenreService gs) {
         List<Book> allBooks = br.getAllBooks();
@@ -30,10 +36,15 @@ public class BookService {
         }
         return allBooks;
     }
-    public Book readRecord(int bookId) {
-        return br.getBookById(bookId);
+    public Book readRecord(int bookId, AuthorService as, GenreService gs) {
+        Book gotBook = br.getBookById(bookId);
+        gotBook.setAuthors(as.readRecordsForBook(gotBook));
+        gotBook.setGenres(gs.readRecordsForBook(gotBook));
+        return gotBook;
     }
-    public void deleteRecord(Book delBook) {
+    public void deleteRecord(Book delBook, BookAuthorLinkService bals, BookGenreLinkService bgls) {
         br.deleteBook(delBook);
+        bals.deleteRecord(delBook);
+        bgls.deleteRecord(delBook);
     }
 }

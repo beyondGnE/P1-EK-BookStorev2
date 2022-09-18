@@ -28,6 +28,8 @@ public class GenreService {
         return gr.getGenresByBook(aBook);
     }
 
-    // public List<Genre>
+    public void updateRecord(Book modBook) {
+        gr.updateGenresForBook(modBook);
+    }
     
 }

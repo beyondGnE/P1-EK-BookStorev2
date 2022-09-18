@@ -25,7 +25,7 @@ public class AuthorService {
         return ar.getAuthorsByBook(newBook);
     }
 
-    public void updateRecord() {
-
+    public void updateRecord(Book modBook) {
+        ar.updateAuthorsForBook(modBook);
     }
 }

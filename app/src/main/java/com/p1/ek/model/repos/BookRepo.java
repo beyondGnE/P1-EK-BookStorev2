@@ -10,24 +10,18 @@ import java.util.List;
 
 import com.p1.ek.model.dbconn.DB;
 import com.p1.ek.model.objfiles.Book;
-import com.p1.ek.model.objfiles.BookGenreLink;
-import com.p1.ek.model.repos.AuthorRepo;
-import com.p1.ek.model.repos.GenreRepo;
-import com.p1.ek.model.objfiles.Author;
-import com.p1.ek.model.objfiles.Genre;
+// import com.p1.ek.model.objfiles.BookGenreLink;
+// import com.p1.ek.model.objfiles.Author;
+// import com.p1.ek.model.objfiles.Genre;
 
 // Only focus on getting the direct data from the db into the model classes.
 // Coordinating that information together should be for the service classes.
 public class BookRepo {
 
     private Connection db;
-    private AuthorRepo ar;
-    private GenreRepo gr;
 
     public BookRepo() {
         db = DB.connectToDb();
-        ar = new AuthorRepo();
-        gr = new GenreRepo();
     }
 
 // THE GETTING METHODS:
@@ -83,8 +77,8 @@ public class BookRepo {
                 gotBook.setImgUrl(rs.getString("imgUrl"));
                 gotBook.setIsbn(rs.getString("isbn"));
                 gotBook.setPublishDate(rs.getString("publishDate"));
-                gotBook.setAuthors(ar.getAuthorsByBookId(rs.getInt("bookId")));
-                gotBook.setGenres(gr.getGenresByBookId(rs.getInt("bookId")));
+                // gotBook.setAuthors(ar.getAuthorsByBookId(rs.getInt("bookId")));
+                // gotBook.setGenres(gr.getGenresByBookId(rs.getInt("bookId")));
                 return gotBook;
             }
         } catch (SQLException e) {
@@ -112,8 +106,8 @@ public class BookRepo {
                     rs.getString("imgUrl"),
                     rs.getString("isbn"),
                     rs.getString("publishDate"),
-                    ar.getAuthorsByBookId(rs.getInt("bookId")),
-                    gr.getGenresByBookId(rs.getInt("bookId"))
+                    new ArrayList<>(),
+                    new ArrayList<>()
                 ));
             }
         } catch (SQLException e) {
@@ -139,8 +133,8 @@ public class BookRepo {
                 gotBook.setImgUrl(rs.getString("imgUrl"));
                 gotBook.setIsbn(rs.getString("isbn"));
                 gotBook.setPublishDate(rs.getString("publishDate"));
-                gotBook.setAuthors(ar.getAuthorsByBookId(rs.getInt("bookId")));
-                gotBook.setGenres(gr.getGenresByBookId(rs.getInt("bookId")));
+                // gotBook.setAuthors(ar.getAuthorsByBookId(rs.getInt("bookId")));
+                // gotBook.setGenres(gr.getGenresByBookId(rs.getInt("bookId")));
                 return gotBook;
             }
         } catch (SQLException e) {
@@ -250,7 +244,7 @@ public class BookRepo {
             sqlStatement.setString(4, modBook.getImgUrl());
             sqlStatement.setString(5, modBook.getIsbn());
             sqlStatement.setString(5, modBook.getPublishDate());
-            sqlStatement.executeQuery();
+            sqlStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -266,7 +260,7 @@ public class BookRepo {
         try {
             PreparedStatement sqlStatement = db.prepareStatement(query);
             sqlStatement.setInt(1, delBook.getBookId());
-            sqlStatement.executeQuery();
+            sqlStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -13,4 +13,14 @@ public class BookAuthorLinkService {
     public void createRecord(Book newBook) {
         balr.addBookAuthorLink(newBook);
     }
+
+    public void updateRecord(Book modBook) {
+        // balr.updateLink(modBook);
+        balr.deleteBookLink(modBook);
+        balr.addBookAuthorLink(modBook);
+    }
+
+    public void deleteRecord(Book delBook) {
+        balr.deleteBookLink(delBook);
+    }
 }

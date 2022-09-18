@@ -3,21 +3,35 @@ const aViewBooks = document.getElementById("viewBooks");
 const aAddBook = document.getElementById("addBook");
 
 aViewBooks.addEventListener("click", async function() {
-    let response = await fetch("http://localhost:7070/books");
+    let response = await fetch("http://localhost:7070/api/books");
     response = await response.json();
     console.log(response);
     populateBooks(response);
 });
 
 aAddBook.addEventListener("click", function() {
-    console.log("testing add book");
+    artContent.innerHTML = "";
+    let arrLabels = ['title', 'price', 'quantity', 'isbn', 'publish date'];
+    arrLabels.forEach(function(label) {
+        let aSection = document.createElement('div');
+        let aLabel = document.createElement('label');
+        aLabel.innerText = label + ": ";
+        let aInput = document.createElement('input');
+        aInput.classList.add('aInput');
+        aSection.appendChild(aLabel);
+        aSection.appendChild(aInput);
+
+        artContent.appendChild(aSection);
+    });
+
+    
 });
 
 
 
 
 async function apiGetABook(id) {
-    let response = await fetch("http://localhost:7070/books/"+id);
+    let response = await fetch("http://localhost:7070/api/books/"+id);
     response = await response.json();
     console.log(response);
     populateBookDetails(response);
@@ -40,7 +54,9 @@ function template_BookThumb(responseItem) {
         bookLink.classList.add('bookThumbImgLink');
         bookLink.paramIndex = responseItem.bookId;
         bookLink.addEventListener('click', function(event) {
+            // console.log(event.currentTarget.paramIndex);
             apiGetABook(event.currentTarget.paramIndex); // The current target in this case is the bookLink you're clicking on!
+            // apiGetABook(1);
         });
 
         bookLink.appendChild(bookImg);
@@ -63,18 +79,15 @@ async function template_BookPage(response) {
 // For looking at a specific book
 // Sort the response's guts into their respective areas.
 async function populateBooks(response) {
-    // console.log(response);
-    // artContent.appendChild(template_BookThumb(response[1]));
-    // console.log(response[0].title);
-    // console.log(template_BookThumb(response[0]));
+
     let bookTable = document.createElement('table');
     bookTable.classList.add('bookTable');
-    for (let i = 0; i < 10; i++)
+    for (let i = 0; i < 10; i+=5)
     {
         // let bookRow = document.createElement('tr');
         let bookRow = document.createElement('ul');
         bookRow.classList.add('bookRow');
-        for (let j = i; j < 5; j++) {
+        for (let j = 0; j < 5; j++) {
             // let bookItem = document.createElement('td');
             let bookItem = document.createElement('li');
             bookItem.classList.add('bookItem');
@@ -91,18 +104,7 @@ async function populateBooks(response) {
             bookTable.appendChild(bookRow);
         }
     }
-    // for (let i = 0; i < response.length; i++)
-    // {
-    //     let bookRow = document.createElement('tr');
-    //     bookRow.classList.add('bookRow');
-    //     let bookItem = document.createElement('td');
-    //     bookItem.classList.add('bookItem');
-    //     console.log(response[i]);
-    //     bookItem.appendChild(template_BookThumb(response[i]));
-    //     bookRow.appendChild(bookItem);
-    //         // console.log(template_BookThumb(response[i+j]));
-    //     bookTable.appendChild(bookRow);
-    // }
+
     artContent.innerHTML = "";
     artContent.appendChild(bookTable);
 }
@@ -111,11 +113,14 @@ function populateBookDetails(response) {
     let bookTitle = createBookTitle(response.title);
     let bookAuthors = createAuthorDiv(response.authors);
     let bookImg = createBookImg(response.imgUrl);
+    let editButton = document.createElement('button')
+    editButton.classList.add('editButton');
 
     artContent.innerText = "";
     artContent.appendChild(bookImg);
     artContent.appendChild(bookTitle);
     artContent.appendChild(bookAuthors);
+    artContent.appendChild(editButton);
 }
 
 function createBookTitle(title) {
