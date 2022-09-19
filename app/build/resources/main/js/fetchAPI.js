@@ -3,7 +3,7 @@ const aViewBooks = document.getElementById("viewBooks");
 const aAddBook = document.getElementById("addBook");
 
 aViewBooks.addEventListener("click", async function() {
-    let response = await fetch("http://localhost:7070/api/books");
+    let response = await fetch("http://localhost:9000/api/books");
     response = await response.json();
     console.log(response);
     populateBooks(response);
@@ -61,7 +61,7 @@ aAddBook.addEventListener("click", function() {
                     }],
             genres: []
         };
-        let response = await fetch('http://localhost:7070/api/books', {
+        let response = await fetch('http://localhost:9000/api/books', {
             method: 'POST',
             mode: 'cors',
             headers: {
@@ -74,7 +74,7 @@ aAddBook.addEventListener("click", function() {
 });
 
 async function apiGetABook(id) {
-    let response = await fetch("http://localhost:7070/api/books/"+id);
+    let response = await fetch("http://localhost:9000/api/books/"+id);
     response = await response.json();
     console.log(response);
     populateBookDetails(response);
@@ -156,6 +156,13 @@ function populateBookDetails(response) {
     let bookTitle = createBookTitle(response.title);
     let bookAuthors = createAuthorDiv(response.authors);
     let bookImg = createBookImg(response.imgUrl);
+    let bookPrice = (function(responseItem) {
+        let pPrice = document.createElement('p');
+        pPrice.classList.add('pPrice');
+        pPrice.innerText = "$"+responseItem;
+
+        return pPrice;
+    })(response.price);
     let editButton = document.createElement('button');
     editButton.classList.add('editButton');
     editButton.innerText = "Edit";
@@ -213,7 +220,7 @@ function populateBookDetails(response) {
                             }],
                 genres: []
             };
-            let toUpdate = await fetch('http://localhost:7070/api/books/'+response.bookId, {
+            let toUpdate = await fetch('http://localhost:9000/api/books/'+response.bookId, {
                 method: 'PUT',
                 mode: 'cors',
                 headers: {
@@ -231,7 +238,7 @@ function populateBookDetails(response) {
     deleteButton.classList.add('deleteButton');
     deleteButton.innerText = "Delete";
     deleteButton.addEventListener('click', async function() {
-        let toDelete = await fetch('http://localhost:7070/api/books/'+response.bookId, {
+        let toDelete = await fetch('http://localhost:9000/api/books/'+response.bookId, {
             method: 'DELETE',
             mode: 'cors',
             headers: {
@@ -246,6 +253,7 @@ function populateBookDetails(response) {
     artContent.appendChild(bookImg);
     artContent.appendChild(bookTitle);
     artContent.appendChild(bookAuthors);
+    artContent.appendChild(bookPrice);
     artContent.appendChild(editButton);
     artContent.appendChild(deleteButton);
 }
