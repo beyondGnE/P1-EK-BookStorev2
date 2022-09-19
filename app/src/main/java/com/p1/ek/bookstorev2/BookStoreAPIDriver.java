@@ -37,7 +37,7 @@ public class BookStoreAPIDriver {
         BookGenreLinkService bgls = new BookGenreLinkService();
         
 
-        Javalin app = Javalin.create(JavalinConfig::enableCorsForAllOrigins).start(7070);
+        Javalin app = Javalin.create(JavalinConfig::enableCorsForAllOrigins).start(9000);
 
         // log.info("Wassup");
         // Get all books
