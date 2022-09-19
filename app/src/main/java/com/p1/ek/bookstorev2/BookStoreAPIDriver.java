@@ -59,7 +59,9 @@ public class BookStoreAPIDriver {
         });
 
         app.put("api/books/{bookId}", ctx -> {
-            Book modBook = bs.readRecord(Integer.parseInt(ctx.pathParam("bookId")), as, gs);
+            ObjectMapper mapper = new ObjectMapper();
+            Book modBook = mapper.readValue(ctx.body(), Book.class);
+            // Book modBook = bs.readRecord(Integer.parseInt(ctx.pathParam("bookId")), as, gs);
             bs.updateRecord(modBook, as, gs, bals, bgls);
         });
 

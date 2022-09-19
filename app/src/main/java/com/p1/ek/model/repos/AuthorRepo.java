@@ -68,7 +68,7 @@ public class AuthorRepo {
             sqlStatement.setString(1, firstName);
             sqlStatement.setString(2, lastName);
             ResultSet rs = sqlStatement.executeQuery();
-            if (rs != null) {
+            if (rs.next()) {
                 Author getAuthor = new Author(rs.getInt("authorId"), 
                                     rs.getString("firstName"), rs.getString("lastName"));
                 return getAuthor;
@@ -150,39 +150,49 @@ public class AuthorRepo {
     }
 
     // There is no expectation of deletion; that's its own separate method and situation.
+    // However, there is a chance that authors were not already added in.
+    // In that case, add them first into database, then 
     public void updateAuthorsForBook(Book modBook) {
-        String query = "update (select * from author a inner join book_author_link bal " +
-                        "on a.authorId = bal.authorId " +
-                        "inner join book b on bal.bookId = b.bookId " +
-                        "where b.bookId = ?) " +
-                        "set firstName = ?, lastName = ? where authorId = ?";
-        try {
-            for (Author a : modBook.getAuthors()) {
-                PreparedStatement sqlStatement = db.prepareStatement(query);
-                sqlStatement.setInt(1, modBook.getBookId());
-                sqlStatement.setString(2, a.getFirstName());
-                sqlStatement.setString(3, a.getLastName());
-                sqlStatement.setInt(4, a.getAuthorId());
-                sqlStatement.executeUpdate();
+        List<Author> possAuthors = this.getAuthorsByBook(modBook); // Getting authors already in db
+        if (possAuthors.size() == 0) {
+            this.addAuthors(modBook);
+        }
+        else {
+            String query = "update (select * from author a inner join book_author_link bal " +
+                            "on a.authorId = bal.authorId " +
+                            "inner join book b on bal.bookId = b.bookId " +
+                            "where b.bookId = ?) " +
+                            "set firstName = ?, lastName = ? where authorId = ?";
+            try {
+                
+                for (Author a : modBook.getAuthors()) {
+                    PreparedStatement sqlStatement = db.prepareStatement(query);
+                    sqlStatement.setInt(1, modBook.getBookId());
+                    sqlStatement.setString(2, a.getFirstName());
+                    sqlStatement.setString(3, a.getLastName());
+                    sqlStatement.setInt(4, a.getAuthorId());
+                    sqlStatement.executeUpdate();
+                }
+                
+            } catch(SQLException e) {
+                e.printStackTrace();
             }
-            
-        } catch(SQLException e) {
-            e.printStackTrace();
         }
     }
+    
 
-    public int findAuthorMaxId() {
-        String query = "select * from author where authorId = (select max(authorId) from author);";
-        int max = -1;
-        try {
-            Statement sqlStatement = db.createStatement();
-            ResultSet rs = sqlStatement.executeQuery(query);
-            if (rs.next()) {
-                max = rs.getInt("authorId");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return max;
-    }
+    // public int findAuthorMaxId() {
+    //     String query = "select * from author where authorId = (select max(authorId) from author);";
+    //     int max = -1;
+    //     try {
+    //         Statement sqlStatement = db.createStatement();
+    //         ResultSet rs = sqlStatement.executeQuery(query);
+    //         if (rs.next()) {
+    //             max = rs.getInt("authorId");
+    //         }
+    //     } catch (SQLException e) {
+    //         e.printStackTrace();
+    //     }
+    //     return max;
+    // }
 }

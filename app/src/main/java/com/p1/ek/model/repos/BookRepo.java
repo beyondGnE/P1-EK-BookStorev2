@@ -243,7 +243,8 @@ public class BookRepo {
             sqlStatement.setInt(3, modBook.getQuantity());
             sqlStatement.setString(4, modBook.getImgUrl());
             sqlStatement.setString(5, modBook.getIsbn());
-            sqlStatement.setString(5, modBook.getPublishDate());
+            sqlStatement.setString(6, modBook.getPublishDate());
+            sqlStatement.setInt(7, modBook.getBookId());
             sqlStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

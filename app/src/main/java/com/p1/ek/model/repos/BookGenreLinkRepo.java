@@ -2,10 +2,12 @@ package com.p1.ek.model.repos;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.p1.ek.model.dbconn.DB;
 import com.p1.ek.model.objfiles.Book;
+import com.p1.ek.model.objfiles.BookGenreLink;
 import com.p1.ek.model.objfiles.Genre;
 
 public class BookGenreLinkRepo {
@@ -31,17 +33,34 @@ public class BookGenreLinkRepo {
         }
     }
 
-    public void deleteBookLink(Book modBook) {
-        String query = "delete from book_genre_link where bookId = ? and genreId = ?";
+    public BookGenreLink getBGLink(Book book) {
+        String query = "select * from book_genre_link where bookId = ?";
         try {
-            for (Genre g : modBook.getGenres()) {
-                PreparedStatement sqlStatement = db.prepareStatement(query);
-                sqlStatement.setInt(1, modBook.getBookId());
-                sqlStatement.setInt(2, g.getGenreId());
-                sqlStatement.executeUpdate();
+            PreparedStatement sql = db.prepareStatement(query);
+            sql.setInt(1, book.getBookId());
+            ResultSet rs = sql.executeQuery();
+            if (rs.next()) {
+                return new BookGenreLink(rs.getInt("bookId"), rs.getInt("genreId"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void deleteBookLink(Book modBook) {
+        if (this.getBGLink(modBook) == null) {
+            String query = "delete from book_genre_link where bookId = ? and genreId = ?";
+            try {
+                for (Genre g : modBook.getGenres()) {
+                    PreparedStatement sqlStatement = db.prepareStatement(query);
+                    sqlStatement.setInt(1, modBook.getBookId());
+                    sqlStatement.setInt(2, g.getGenreId());
+                    sqlStatement.executeUpdate();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 

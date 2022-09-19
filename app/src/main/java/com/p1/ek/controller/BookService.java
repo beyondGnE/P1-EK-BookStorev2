@@ -19,6 +19,8 @@ public class BookService {
         bals.createRecord(newBook);
         bgls.createRecord(newBook);
     }
+
+    
     public void updateRecord(Book modBook, AuthorService as, GenreService gs, BookAuthorLinkService bals, BookGenreLinkService bgls) {
         br.updateBook(modBook);
         as.updateRecord(modBook);
@@ -43,8 +45,8 @@ public class BookService {
         return gotBook;
     }
     public void deleteRecord(Book delBook, BookAuthorLinkService bals, BookGenreLinkService bgls) {
-        br.deleteBook(delBook);
         bals.deleteRecord(delBook);
         bgls.deleteRecord(delBook);
+        br.deleteBook(delBook);
     }
 }

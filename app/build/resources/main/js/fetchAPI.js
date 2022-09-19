@@ -10,28 +10,68 @@ aViewBooks.addEventListener("click", async function() {
 });
 
 aAddBook.addEventListener("click", function() {
-    let titleSection = document.createElement('div');
-    let titleLabel = document.createElement('label');
-    titleLabel.innerText = "Title:";
-    let titleInput = document.createElement('input');
-    titleInput.classList.add('titleInput');
-    titleSection.appendChild(titleLabel);
-    titleSection.appendChild(titleInput);
-
-    let isbnInput = document.createElement('input')
-    isbnInput.classList.add('isbnInput');
-    let priceInput = document.createElement('input')
-    priceInput.classList.add('priceInput');
-    // let 
-
     artContent.innerHTML = "";
-    artContent.appendChild(titleSection);
-    artContent.appendChild(isbnInput);
-    artContent.appendChild(priceInput);
+    let arrLabels = ['title', 'price', 'quantity', 'isbn', 'publishDate'];
+    arrLabels.forEach(function(label) {
+        let aSection = document.createElement('div');
+        let aLabel = document.createElement('label');
+        aLabel.innerText = label + ": ";
+        let aInput = document.createElement('input');
+        aInput.classList.add(label+'Input');
+        aInput.id = label+'Input';
+        aSection.appendChild(aLabel);
+        aSection.appendChild(aInput);
+
+        artContent.appendChild(aSection);
+    });
+
+    let aSection = document.createElement('div');
+    let firstNameLabel = document.createElement('label');
+    firstNameLabel.innerText = "author first name: ";
+    let firstNameInput = document.createElement('input');
+    firstNameInput.classList.add('firstNameInput');
+    firstNameInput.id = 'firstNameInput';
+
+    let lastNameLabel = document.createElement('label');
+    lastNameLabel.innerText = "author last name: ";
+    let lastNameInput = document.createElement('input');
+    lastNameInput.classList.add('lastNameInput');
+    lastNameInput.id = 'lastNameInput';
+    aSection.appendChild(firstNameLabel);
+    aSection.appendChild(firstNameInput);
+    aSection.appendChild(lastNameLabel);
+    aSection.appendChild(lastNameInput);
+
+    artContent.appendChild(aSection);
+
+    let submitButton = document.createElement('button');
+    submitButton.innerText = "Submit";
+    submitButton.addEventListener('click', async function() {
+    
+        let inputBook = {
+            title: document.getElementById('titleInput').value != null ? document.getElementById('titleInput').value : "",
+            price: document.getElementById('priceInput').value != null ? document.getElementById('priceInput').value : "",
+            quantity: document.getElementById('quantityInput').value != null ? document.getElementById('quantityInput').value : "",
+            imgUrl: "",
+            isbn: document.getElementById('isbnInput').value != null ? document.getElementById('isbnInput').value : "",
+            publishDate: document.getElementById('publishDateInput').value != null ? document.getElementById('publishDateInput').value : "",
+            authors: [{
+                        firstName: document.getElementById('firstNameInput').value,
+                        lastName: document.getElementById('lastNameInput').value 
+                    }],
+            genres: []
+        };
+        let response = await fetch('http://localhost:7070/api/books', {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(inputBook)
+        });
+    });
+    artContent.appendChild(submitButton);
 });
-
-
-
 
 async function apiGetABook(id) {
     let response = await fetch("http://localhost:7070/api/books/"+id);
@@ -75,7 +115,7 @@ function template_BookThumb(responseItem) {
     } return null;
 }
 
-async function template_BookPage(response) {
+async function editBookPage(response) {
 
 }
 
@@ -116,14 +156,98 @@ function populateBookDetails(response) {
     let bookTitle = createBookTitle(response.title);
     let bookAuthors = createAuthorDiv(response.authors);
     let bookImg = createBookImg(response.imgUrl);
-    let editButton = document.createElement('button')
+    let editButton = document.createElement('button');
     editButton.classList.add('editButton');
+    editButton.innerText = "Edit";
+    editButton.addEventListener('click', function() {
+        
+        artContent.innerHTML = "";
+        let arrLabels = ['title', 'price', 'quantity', 'isbn', 'publishDate', 'author'];
+        arrLabels.forEach(function(label) {
+            let aSection = document.createElement('div');
+            let aLabel = document.createElement('label');
+            aLabel.innerText = label + ": ";
+            let aInput = document.createElement('input');
+            aInput.classList.add(label+'Input');
+            aInput.id = label+'Input';
+            aSection.appendChild(aLabel);
+            aSection.appendChild(aInput);
+
+            artContent.appendChild(aSection);
+        });
+
+        let aSection = document.createElement('div');
+        let firstNameLabel = document.createElement('label');
+        firstNameLabel.innerText = "author first name: ";
+        let firstNameInput = document.createElement('input');
+        firstNameInput.classList.add('firstNameInput');
+        firstNameInput.id = 'firstNameInput';
+
+        let lastNameLabel = document.createElement('label');
+        lastNameLabel.innerText = "author last name: ";
+        let lastNameInput = document.createElement('input');
+        lastNameInput.classList.add('lastNameInput');
+        lastNameInput.id = 'lastNameInput';
+        aSection.appendChild(firstNameLabel);
+        aSection.appendChild(firstNameInput);
+        aSection.appendChild(lastNameLabel);
+        aSection.appendChild(lastNameInput);
+
+        artContent.appendChild(aSection);
+
+        let submitButton = document.createElement('button');
+        submitButton.innerText = "Submit";
+        submitButton.addEventListener('click', async function() {
+        
+            let inputBook = {
+                title: document.getElementById('titleInput').value != "" ? document.getElementById('titleInput').value : response.title,
+                price: document.getElementById('priceInput').value != "" ? document.getElementById('priceInput').value : response.price,
+                quantity: document.getElementById('quantityInput').value != "" ? document.getElementById('quantityInput').value : response.quantity,
+                imgUrl: "",
+                isbn: document.getElementById('isbnInput').value != "" ? document.getElementById('isbnInput').value : response.isbn,
+                publishDate: document.getElementById('publishDateInput').value != "" ? document.getElementById('publishDateInput').value : response.publishDate,
+                authors: [
+                            {
+                                firstName: document.getElementById('firstNameInput').value,
+                                lastName: document.getElementById('lastNameInput').value
+                            }],
+                genres: []
+            };
+            let toUpdate = await fetch('http://localhost:7070/api/books/'+response.bookId, {
+                method: 'PUT',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(inputBook)
+            });
+            console.log(inputBook);
+            populateBooks();
+        });
+        
+        artContent.appendChild(submitButton);
+    });
+    let deleteButton = document.createElement('button');
+    deleteButton.classList.add('deleteButton');
+    deleteButton.innerText = "Delete";
+    deleteButton.addEventListener('click', async function() {
+        let toDelete = await fetch('http://localhost:7070/api/books/'+response.bookId, {
+            method: 'DELETE',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: response
+        });
+    });
+
 
     artContent.innerText = "";
     artContent.appendChild(bookImg);
     artContent.appendChild(bookTitle);
     artContent.appendChild(bookAuthors);
     artContent.appendChild(editButton);
+    artContent.appendChild(deleteButton);
 }
 
 function createBookTitle(title) {
@@ -161,23 +285,5 @@ function createBookImg(imgUrl) {
 }
 
 async function apiPostBook() {
-    titleInput = document.getElementById('titleInput');
-    authorFirstName = document.getElementById('authorFirstName');
-
-    let inputBook = {
-        title: titleInput.value != null ? titleInput.value : "",
-        author: authorFirstName.value != null ? titleInput.value : "",
-    }
-}
-
-function populateBookForm() {
-    let titleInput = document.createElement('input').classList.add('titleInput');
-    let isbnInput = document.createElement('input').classList.add('isbnInput');
-    let priceInput = document.createElement('input').classList.add('priceInput');
-    // let 
-
-    artContent.innerHTML = "";
-    artContent.appendChild(titleInput);
-    artContent.appendChild(isbnInput);
-    artContent.appendChild(priceInput);
+    
 }

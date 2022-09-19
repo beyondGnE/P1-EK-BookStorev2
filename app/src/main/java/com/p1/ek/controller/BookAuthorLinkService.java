@@ -16,8 +16,11 @@ public class BookAuthorLinkService {
 
     public void updateRecord(Book modBook) {
         // balr.updateLink(modBook);
-        balr.deleteBookLink(modBook);
+        // if (as.readRecordsForBook(modBook).size() == 0) { // If author already in table, just add the link; otherwise, add author
+        //     as.createRecord(modBook);
+        // 
         balr.addBookAuthorLink(modBook);
+        
     }
 
     public void deleteRecord(Book delBook) {
